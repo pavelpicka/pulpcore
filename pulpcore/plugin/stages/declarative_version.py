@@ -138,7 +138,7 @@ class DeclarativeVersion:
         Perform the work. This is the long-blocking call where all syncing occurs.
         """
         with WorkingDirectory():
-            with self.repository.new_version() as new_version:
+            with self.repository.new_version(mirror=self.mirror) as new_version:
                 loop = asyncio.get_event_loop()
                 stages = self.pipeline_stages(new_version)
                 stages.append(ContentAssociation(new_version))

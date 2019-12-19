@@ -76,7 +76,7 @@ class Repository(MasterModel):
             complete=True)
         version.save()
 
-    def new_version(self, base_version=None):
+    def new_version(self, base_version=None, **kwargs):
         """
         Create a new RepositoryVersion for this Repository
 
