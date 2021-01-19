@@ -52,6 +52,14 @@ class QueryExistingArtifacts(Stage):
             for d_content in batch:
                 for d_artifact in d_content.d_artifacts:
                     if d_artifact.artifact._state.adding:
+                        for digest_type in Artifact.FORBIDDEN_DIGESTS:
+                            digest_value = getattr(d_artifact.artifact, digest_type)
+                            if digest_value:
+                                raise ValueError(
+                                    "Remote artifact contains forbidden checksum type {}. "
+                                    "You can allow it with 'ALLOWED_CONTENT_CHECKSUMS' "
+                                    "settings.".format(digest_type)
+                                )
                         for digest_type in Artifact.COMMON_DIGEST_FIELDS:
                             digest_value = getattr(d_artifact.artifact, digest_type)
                             if digest_value:
@@ -65,7 +73,6 @@ class QueryExistingArtifacts(Stage):
             for digest_type, digests in artifact_digests_by_type.items():
                 query_params = {"{attr}__in".format(attr=digest_type): digests}
                 existing_artifacts = Artifact.objects.filter(**query_params).only(digest_type)
-
                 for d_content in batch:
                     for d_artifact in d_content.d_artifacts:
                         artifact_digest = getattr(d_artifact.artifact, digest_type)

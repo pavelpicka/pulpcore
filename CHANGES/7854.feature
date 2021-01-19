@@ -1,0 +1,1 @@
+Raise error when DeclarativeArtifact checksum found in 'FORBIDDEN_DIGESTS'.
