@@ -1,0 +1,1 @@
+User will get error when try publish with disallowed checksum type.

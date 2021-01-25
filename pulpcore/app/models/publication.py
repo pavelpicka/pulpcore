@@ -69,6 +69,14 @@ class Publication(MasterModel):
             Adds a Task.created_resource for the publication.
         """
         with transaction.atomic():
+            for artifact in repository_version.artifacts:
+                for checksum in Artifact.DIGEST_FIELDS:
+                    checksum_type = getattr(artifact, checksum)
+            if not checksum_type:
+                raise ValueError(
+                    "Repository version contains unsupported checksum type, "
+                    "thus can't be pulbished."
+                )
             publication = cls(pass_through=pass_through, repository_version=repository_version)
             publication.save()
             resource = CreatedResource(content_object=publication)
